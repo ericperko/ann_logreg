@@ -12,19 +12,19 @@ def parse(problem_set):
 #            match = comment_pattern.search(line)
             line = re.sub(comment_pattern, "", line)
             if line:
-               line = re.sub(r"\s+", "", line)
-               line = line.strip(".")
-               if i == 0:
-                   #First line has to be class labels
-                   if "0,1" in line:
-                       i += 1
-                       continue
-               else:
-                   label, values = line.split(":")
-                   columns[i-1] = (label, values.split(","))
-                   i += 1
+                line = re.sub(r"\s+", "", line)
+                line = line.strip(".")
+                if i == 0:
+                    #First line has to be class labels
+                    if "0,1" in line:
+                        i += 1
+                        continue
+                else:
+                    label, values = line.split(":")
+                    columns[i-1] = (label, values.split(","))
+                    i += 1
         columns[len(columns)] = ("class label", ["0","1"])
-            
+
     with open("../prog1data/{0}/{0}.data".format(problem_set)) as data_file:
         for line in data_file:
             line = line.strip()
@@ -51,3 +51,8 @@ def parse(problem_set):
                     elif part in "?":
                         data[parts[0]].append(None)
     return (columns, data)
+
+def parse_to_logn_and_normalize(problem_set):
+    columns, data = parse(problem_set)
+        
+    
