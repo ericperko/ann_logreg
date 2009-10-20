@@ -112,14 +112,15 @@ def parse_to_logn_and_normalize(problem_set):
                         normalizers[i] = (statlib.stats.lmean(temp), statlib.stats.lstdev(temp))
 
         #Create Log(N) mappings
-        mapping = {}
+        mappings = {}
         for i in range(0, len(example)-1):
                 if "continuous" not in columns[i+1][1]:
+                        mappings[i] = {}
                         values = columns[i+1][1]
                         num_values = columns[i+1][2]
                         num_inputs = math.ceil(math.log(num_values, 2))
-                        for i in range(0, len(values)):
-                                mapping[values[i]] = [int(x) for x in tobin(i, num_inputs)]
+                        for j in range(0, len(values)):
+                                mappings[i][values[j]] = [int(x) for x in tobin(j, num_inputs)]
         
         #Convert to log(N) encoding and normalize
         for key in data:
@@ -131,7 +132,7 @@ def parse_to_logn_and_normalize(problem_set):
                                 new_val = (val - normalizers[i][0]) / normalizers[i][1]
                                 new_example.append(new_val)
                         else:
-                                new_example.extend(mapping[example[i]])
+                                new_example.extend(mappings[i][example[i]])
                 new_example.append(int(example[-1]))
                 data[key] = new_example
         
