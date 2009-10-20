@@ -5,8 +5,8 @@ import datetime
 import data_parser.parser
 import libs.folds
 import libs.node
-import libs.dtree_predict
-import libs.dtree_helper
+import libs.ann_helper
+import libs.ann_predict
 
 def main(args):
     problem_name, option1, option2, option3, option4 = args
@@ -34,13 +34,28 @@ def main(args):
     columns, data = data_parser.parser.parse_to_logn_and_normalize(problem_name)
     stratified_folds = libs.folds.stratify_folds(num_folds, data)
     
-    columns2 = columns.copy()
-    del columns2[len(columns)-1]
-    del columns2[0]
+    results = []
+    
+    for i in range(0, num_folds):
+        print "Starting on fold {0}\n".format(i)
+        examples = []
+        for j in range(0, num_folds):
+            if i != j:
+                examples.extend(stratified_folds[j].examples())
+        num_inputs = len(examples[0]) -1
+        n = libs.ann_helper.NeuralNetwork(num_inputs, num_hidden_units, 1, learning_rate, weight_decay_gamma)
+        if num_iterations not in range(10000, 100001):
+            if num_iterations < 10000:
+                num_iterations = 10000
+            else:
+                num_iterations = 100000
+        n.backprop(examples, num_iterations)
+        result = libs.ann_predict.test_ann(n, stratified_folds[i].examples())
+        results.append(result)
+    
+    libs.ann_predict.aggregate_results(results)
 
 if __name__ == "__main__":
-
     main(sys.argv[1:])
     columns = {}
-    #main(["ab", "1", "10", "0", "0"])
     print "Finished"
