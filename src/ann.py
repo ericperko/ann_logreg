@@ -29,16 +29,18 @@ def main(args):
     else:
         print "Option 4 must be a nonnegative integer. You specified {0}".format(option4)
 
-    columns, data = data_parser.parser.parse(problem_name)
+    learning_rate = 0.1
+        
+    columns, data = data_parser.parser.parse_to_logn_and_normalize(problem_name)
     stratified_folds = libs.folds.stratify_folds(num_folds, data)
-
+    
     columns2 = columns.copy()
     del columns2[len(columns)-1]
     del columns2[0]
 
 if __name__ == "__main__":
 
-#    main(sys.argv[1:])
+    main(sys.argv[1:])
     columns = {}
-    main(["ab", "1", "10", "0", "0"])
+    #main(["ab", "1", "10", "0", "0"])
     print "Finished"
