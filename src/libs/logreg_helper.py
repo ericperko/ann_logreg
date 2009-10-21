@@ -45,8 +45,11 @@ class LogisticRegression:
         sum1 = self.weights[0]
         for i in xrange(0, self.num_inputs):
             sum1 += self.weights[i+1] * example[i]
-        numerator = math.exp(sum1)
-        denom = 1 + numerator
+        numerator = 1
+        try:
+            denom = 1 + math.exp(-1*sum1)
+        except OverflowError:
+            denom = 1
         return numerator / denom
     
     def logLikelihood(self, examples):
@@ -54,5 +57,11 @@ class LogisticRegression:
         for example in examples:
             probYPos = self.probYPos(example)
             probYNeg = 1 - probYPos
-            sum1 += example[-1] * math.log(probYPos) + (1 - example[-1]) * math.log(probYNeg)
+            sum1 += example[-1] * logreg_log(probYPos) + (1 - example[-1]) * logreg_log(probYNeg)
         return sum1
+    
+def logreg_log(x):
+    if x == 0:
+        return 0
+    else:
+        return math.log(x)

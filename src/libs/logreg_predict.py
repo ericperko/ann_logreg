@@ -63,12 +63,12 @@ class Result:
     def addLabeled(self, example, label):
         self.examples.append((example[-1], label))
         if example[-1] == 1:
-            if label/(1-label) >= 1:
+            if label >= (1-label):
                 self.true_pos += 1
             else:
                 self.false_neg += 1
         else:
-            if label/(1-label) < 1:
+            if label < (1-label):
                 self.true_neg += 1
             else:
                 self.false_pos += 1
