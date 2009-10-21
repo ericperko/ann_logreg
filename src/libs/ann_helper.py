@@ -32,9 +32,10 @@ class NeuralNetwork:
             for example in examples:
                 errors = {}
                 outputs= self.feedforward(example)
+                total_error += math.pow((example[-1] - outputs[self.num_hidden]), 2)
                 for k in range(self.num_hidden, self.num_hidden + self.num_outputs):
                     errors[k] = outputs[k] * (1 - outputs[k]) * (example[-1] - outputs[k])
-                    total_error += errors[k]
+                    #total_error += errors[k]
                 for h in range(0, self.num_hidden):
                     output_h = self.inputs[-1][h]
                     sum1 = 0
@@ -51,8 +52,8 @@ class NeuralNetwork:
                         w_t1 = (1 - 2*self.learning_rate*self.weight_decay_gamma) * self.weights[j][i] #weight decay
                         w_t2 = self.learning_rate * errors[j] * self.inputs[j][i]
                         self.weights[j][i] = w_t1 + w_t2
-            total_error = total_error / len(examples)
-            if math.fabs(total_error) < 0.000000001: # really small total error...
+            total_error = total_error / 2
+            if math.fabs(total_error) < 0.0000001: # termination condition
                 break
                         
 def sigmoid(x):
